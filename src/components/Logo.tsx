@@ -1,6 +1,6 @@
 const Logo = () => {
   return (
-    <div className="hidden items-center text-3xl sm:flex">
+    <div className="items-center text-3xl flex">
       <p>
         L<span className="text-base">ink</span>
       </p>

@@ -3,7 +3,7 @@ import Logo from "./Logo";
 const Header = () => {
   const { data: session } = useSession();
   return (
-    <header className="flex w-full items-center justify-between bg-neutral-800 px-20 py-6 text-gray-100">
+    <header className="flex w-full items-center justify-between bg-neutral-800 sm:px-20 pl-6 py-6 text-gray-100">
       <Logo />
       <div>
         {session ? (

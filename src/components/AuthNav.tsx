@@ -13,7 +13,11 @@ const AuthNav = () => {
   const path = router.asPath;
   return (
     <div className="flex items-center justify-between rounded-lg px-6 py-4 shadow-lg">
-      <Logo />
+      <div>
+        <div className="hidden sm:block">
+          <Logo />
+        </div>
+      </div>
       <div className="flex gap-9 sm:gap-3">
         <Link
           href={"/dashboard"}
@@ -68,9 +72,7 @@ const AuthNav = () => {
           </p>
         </Link>
       </div>
-      <div
-        className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
-      >
+      <div className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100">
         <MdIosShare size={32} />
         <p className="hidden sm:block">Share</p>
       </div>
