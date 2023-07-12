@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import {
   MdOutlinePhonelink,
   MdBackupTable,
@@ -6,53 +7,70 @@ import {
   MdSettings,
   MdIosShare,
 } from "react-icons/md";
+import Logo from "./Logo";
 const AuthNav = () => {
   const router = useRouter();
   const path = router.asPath;
   return (
-    <div className="flex items-center justify-between rounded-lg shadow-lg px-6 py-4">
-      <div className="">
-        <p className="hidden sm:block">Logo</p>
-      </div>
+    <div className="flex items-center justify-between rounded-lg px-6 py-4 shadow-lg">
+      <Logo />
       <div className="flex gap-9 sm:gap-3">
-        <div className="flex flex-col items-center scale-95 hover:scale-100 translation ease-in-out duration-300 cursor-pointer">
+        <Link
+          href={"/dashboard"}
+          className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
+        >
           <MdOutlinePhonelink size={32} />
-          <p className={`${path === "/dashboard" ? "font-bold" : ""} text-lg hidden sm:block`}>
+          <p
+            className={`${
+              path === "/dashboard" ? "font-bold" : ""
+            } hidden text-lg sm:block`}
+          >
             Links
           </p>
-        </div>
-        <div className="flex flex-col items-center scale-95 hover:scale-100 translation ease-in-out duration-300 cursor-pointer">
+        </Link>
+        <Link
+          href={"/dashboard/appearence"}
+          className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
+        >
           <MdBackupTable size={32} />
           <p
             className={`${
               path === "/dashboard/appearence" ? "font-bold" : ""
-            } text-lg hidden sm:block`}
+            } hidden text-lg sm:block`}
           >
             Appearence
           </p>
-        </div>
-        <div className="flex flex-col items-center scale-95 hover:scale-100 translation ease-in-out duration-300 cursor-pointer">
+        </Link>
+        <Link
+          href={"/dashboard/analytics"}
+          className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
+        >
           <MdQueryStats size={32} />
           <p
             className={`${
               path === "/dashboard/analytics" ? "font-bold" : ""
-            } text-lg hidden sm:block`}
+            } hidden text-lg sm:block`}
           >
             Analytics
           </p>
-        </div>
-        <div className="flex flex-col items-center scale-95 hover:scale-100 translation ease-in-out duration-300 cursor-pointer">
+        </Link>
+        <Link
+          href={"/dashboard/settings"}
+          className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
+        >
           <MdSettings size={32} />
           <p
             className={`${
               path === "/dashboard/settings" ? "font-bold" : ""
-            } text-lg hidden sm:block`}
+            } hidden text-lg sm:block`}
           >
             Settings
           </p>
-        </div>
+        </Link>
       </div>
-      <div className="flex flex-col items-center scale-95 hover:scale-100 translation ease-in-out duration-300 cursor-pointer">
+      <div
+        className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
+      >
         <MdIosShare size={32} />
         <p className="hidden sm:block">Share</p>
       </div>

@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Header from "../components/Header";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import AuthNav from "../components/AuthNav";
@@ -27,7 +28,6 @@ const Home: NextPage = () => {
 export default Home;
 
 import type { GetServerSidePropsContext } from "next";
-import Header from "../components/Header";
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getSession(ctx);
   if (session) {
