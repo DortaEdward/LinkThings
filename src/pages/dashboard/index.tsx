@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import AuthorizedLayout from "../../Layout/Authorized";
 import { MdEditNote, MdRemoveCircle } from "react-icons/md";
+import Image from "next/image";
 
 type Link = {
   title: string;
@@ -32,18 +33,20 @@ const Dashboard = () => {
     },
   ]);
   const [linkInput, setLinkInput] = useState({
-    title: '',
-    link:'',
+    title: "",
+    link: "",
   });
 
-  function removeLink(idx: number){
-    const newLinks = links.filter((_,i) => i !== idx);
-    setLinks(newLinks)
+  const { data: session } = useSession();
+
+  function removeLink(idx: number) {
+    const newLinks = links.filter((_, i) => i !== idx);
+    setLinks(newLinks);
   }
 
   const handleSubmit = () => {
     if (linkInput?.link.length <= 0 || linkInput.title.length <= 0) return;
-    alert('HIttin')
+    alert("HIttin");
     setLinks((prev) => [
       ...prev,
       {
@@ -57,8 +60,8 @@ const Dashboard = () => {
     });
   };
 
-  function handleClear(){
-    setLinkInput({title:'',link:''})
+  function handleClear() {
+    setLinkInput({ title: "", link: "" });
   }
 
   function updateForm(key: string) {
@@ -76,7 +79,7 @@ const Dashboard = () => {
       <div className="flex gap-2">
         <div className="w-full rounded-lg px-4 pt-6 shadow-lg lg:w-2/3">
           <div>
-            <div className="flex w-full flex-col items-end justify-between rounded-md py-3 px-4 shadow-lg">
+            <div className="flex w-full flex-col items-end justify-between rounded-md px-4 py-3 shadow-lg">
               <div className="flex w-full flex-col gap-1">
                 <input
                   type="text"
@@ -94,18 +97,23 @@ const Dashboard = () => {
                 />
               </div>
               <div className="my-2"></div>
-              <div className="flex flex-wrap gap-3 text-gray-100 w-full justify-end">
+              <div className="flex w-full flex-wrap justify-end gap-3 text-gray-100">
                 <button
-                  className="rounded bg-green-600 w-[102px] py-2"
+                  className="w-[102px] rounded bg-green-600 py-2"
                   onClick={handleSubmit}
                 >
                   Add
                 </button>
-                <button onClick={handleClear} className="rounded bg-red-600 w-[102px] py-2">Clear</button>
+                <button
+                  onClick={handleClear}
+                  className="w-[102px] rounded bg-red-600 py-2"
+                >
+                  Clear
+                </button>
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 py-4 h-[424px] overflow-auto shadow-lg">
+          <div className="flex h-[424px] flex-col gap-4 overflow-auto py-4 shadow-lg">
             {links.map((link: Link, idx: number) => {
               return (
                 <div
@@ -118,7 +126,11 @@ const Dashboard = () => {
                   </div>
                   <div className="flex flex-col gap-2">
                     <MdEditNote className="cursor-pointer" size={28} />
-                    <MdRemoveCircle onClick={() => removeLink(idx)} className="cursor-pointer" size={24} />
+                    <MdRemoveCircle
+                      onClick={() => removeLink(idx)}
+                      className="cursor-pointer"
+                      size={24}
+                    />
                   </div>
                 </div>
               );
@@ -129,7 +141,31 @@ const Dashboard = () => {
         <div className="hidden w-1/3 rounded-lg px-4 py-10 shadow-lg lg:block">
           <div className="relative flex h-full items-center justify-center">
             <div className="h-[500px] w-[260px] rounded-3xl bg-neutral-800"></div>
-            <div className="absolute h-[485px] w-[245px] rounded-2xl bg-neutral-100"></div>
+            <div className="absolute flex h-[485px] w-[245px] justify-center rounded-2xl bg-neutral-100 pt-10">
+              <div className="flex flex-col items-center gap-1">
+                <Image
+                  src={session?.user?.image as string}
+                  alt={`Image of ${session?.user?.image}`}
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+                <div className="leading-4">
+                  <p className="font-bold capitalize">{session?.user?.name}</p>
+                  <p className="text-sm italic">@{session?.user?.name}</p>
+                </div>
+                <div className="my-2"></div>
+                <div className="flex flex-col gap-2 outline w-[200px] h-[300px]">
+                  {links.map((link, idx) => {
+                    return (
+                      <a href={link.link} key={`${link.title}-${idx}`}>
+                        {link.title}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
             <div className="absolute top-5 h-[20px] w-[100px] rounded-bl-md rounded-br-md bg-neutral-800"></div>
           </div>
         </div>
