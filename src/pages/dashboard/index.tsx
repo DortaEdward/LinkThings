@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { IconType } from "react-icons";
 import { getSession, useSession } from "next-auth/react";
 import AuthorizedLayout from "../../Layout/Authorized";
-import { MdEditNote, MdRemoveCircle } from "react-icons/md";
-import Image from "next/image";
+import {
+  MdEditNote,
+  MdRemoveCircle,
+  MdExpandMore,
+  MdExpandLess,
+} from "react-icons/md";
 
+import { IconsImages } from "../../components/Icons";
+
+import Image from "next/image";
+import Icon from "../../components/Icon";
 type Link = {
   title: string;
   link: string;
 };
 
 const Dashboard = () => {
+  const [iconListToggle, setIconListToggle] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<string>();
   const [links, setLinks] = useState<Link[]>([
     {
       title: "Instagram",
@@ -32,7 +43,8 @@ const Dashboard = () => {
       link: "https://www.Instagram.com",
     },
   ]);
-  const [linkInput, setLinkInput] = useState({
+
+  const [linkInput, setLinkInput] = useState<Link>({
     title: "",
     link: "",
   });
@@ -46,14 +58,7 @@ const Dashboard = () => {
 
   const handleSubmit = () => {
     if (linkInput?.link.length <= 0 || linkInput.title.length <= 0) return;
-    alert("HIttin");
-    setLinks((prev) => [
-      ...prev,
-      {
-        title: linkInput.title,
-        link: linkInput.link,
-      },
-    ]);
+    setLinks((prev) => [...prev, linkInput]);
     setLinkInput({
       title: "",
       link: "",
@@ -97,19 +102,56 @@ const Dashboard = () => {
                 />
               </div>
               <div className="my-2"></div>
-              <div className="flex w-full flex-wrap justify-end gap-3 text-gray-100">
-                <button
-                  className="w-[102px] rounded bg-green-600 py-2"
-                  onClick={handleSubmit}
-                >
-                  Add
-                </button>
-                <button
-                  onClick={handleClear}
-                  className="w-[102px] rounded bg-red-600 py-2"
-                >
-                  Clear
-                </button>
+              <div className="flex w-full flex-wrap justify-between gap-3 text-gray-100">
+                
+                <div className="relative flex items-center">
+                  <div
+                    className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-neutral-950 shadow-lg hover:bg-gray-100"
+                    onClick={() => setIconListToggle((prev) => !prev)}
+                  >
+                    <p>Select a icon</p>
+                    {iconListToggle ? (
+                      <MdExpandLess size={24} />
+                    ) : (
+                      <MdExpandMore size={24} />
+                    )}
+                  </div>
+                  {selectedIcon ?<div className="ml-4"><Icon name={selectedIcon} /></div> :<></>}
+                  
+                  {iconListToggle ? (
+                    <div className="-bottom-32 absolute grid h-[120px] w-full grid-cols-3 gap-3 overflow-auto bg-gray-50 px-1 py-4 text-neutral-950 shadow-lg">
+                      {IconsImages.map((icon) => {
+                        return (
+                          <icon.icon
+                            className="cursor-pointer rounded p-1 shadow-lg"
+                            size={34}
+                            key={icon.name}
+                            onClick={() => {
+                              setSelectedIcon(icon.name);
+                              setIconListToggle(false);
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    className="w-[102px] rounded bg-green-600 py-2"
+                    onClick={handleSubmit}
+                  >
+                    Add
+                  </button>
+                  <button
+                    onClick={handleClear}
+                    className="w-[102px] rounded bg-red-600 py-2"
+                  >
+                    Clear
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -143,27 +185,35 @@ const Dashboard = () => {
             <div className="h-[500px] w-[260px] rounded-3xl bg-neutral-800"></div>
             <div className="absolute flex h-[485px] w-[245px] justify-center rounded-2xl bg-neutral-100 pt-10">
               <div className="flex flex-col items-center gap-1">
-                <Image
-                  src={session?.user?.image as string}
-                  alt={`Image of ${session?.user?.image}`}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
-                <div className="leading-4">
-                  <p className="font-bold capitalize">{session?.user?.name}</p>
-                  <p className="text-sm italic">@{session?.user?.name}</p>
-                </div>
-                <div className="my-2"></div>
-                <div className="flex flex-col gap-2 outline w-[200px] h-[300px]">
-                  {links.map((link, idx) => {
-                    return (
-                      <a href={link.link} key={`${link.title}-${idx}`}>
-                        {link.title}
-                      </a>
-                    );
-                  })}
-                </div>
+                {session?.user ? (
+                  <>
+                    <Image
+                      src={session?.user?.image as string}
+                      alt={`Image of ${session?.user?.image}`}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                    <div className="leading-4">
+                      <p className="font-bold capitalize">
+                        {session?.user?.name}
+                      </p>
+                      <p className="text-sm italic">@{session?.user?.name}</p>
+                    </div>
+                    <div className="my-2"></div>
+                    <div className="flex h-[300px] w-[200px] flex-col gap-2 outline">
+                      {links.map((link, idx) => {
+                        return (
+                          <a href={link.link} key={`${link.title}-${idx}`}>
+                            {link.title}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
             <div className="absolute top-5 h-[20px] w-[100px] rounded-bl-md rounded-br-md bg-neutral-800"></div>
