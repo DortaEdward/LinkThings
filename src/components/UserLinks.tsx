@@ -1,7 +1,7 @@
 import Icon from "./Icon";
 import { MdEditNote, MdRemoveCircle } from "react-icons/md";
 
-const UserLink = ({ link, removeLink, idx }: any) => {
+const UserLink = ({ link, deleteLink, id }: any) => {
   return (
     <>
       <div className="flex items-center gap-2">
@@ -14,7 +14,7 @@ const UserLink = ({ link, removeLink, idx }: any) => {
       <div className="flex flex-col gap-2">
         <MdEditNote className="cursor-pointer" size={28} />
         <MdRemoveCircle
-          onClick={() => removeLink(idx)}
+          onClick={() => deleteLink(link.id)}
           className="cursor-pointer"
           size={24}
         />

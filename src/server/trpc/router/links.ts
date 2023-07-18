@@ -31,4 +31,16 @@ export const linkRouter = router({
         data: payload
       })
     }),
+    deleteLink: protectedProcedure
+    .input(z.object({
+      id:z.string()
+    }))
+    .mutation(async ({input,ctx}) => {
+      return ctx.prisma.link.delete({
+        where:{
+          id: input.id,
+          userId:ctx.session.user.id
+        }
+      });
+    })
 });

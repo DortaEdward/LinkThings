@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 type Links ={
+  id: string;
   name: string;
   href: string;
 }
@@ -23,16 +24,22 @@ const LinkEdit = ({ links }:Props) => {
   const [selectedIcon, setSelectedIcon] = useState<string>();
   const queryClient = trpc.useContext();
   const createLinkMutation = trpc.link.createLink.useMutation();
+  const deleteLinkMutation = trpc.link.deleteLink.useMutation();
 
   const [linkInput, setLinkInput] = useState<Links>({
+    id:"",
     name: "",
     href: "",
   });
 
   const { data: session } = useSession();
 
-  function removeLink(idx: number) {
-    return
+  function deleteLink(id: string) {
+    deleteLinkMutation.mutate(({id}),{
+      onSuccess(){
+        queryClient.link.getUserLinks.invalidate()
+      }
+    })
   }
 
   const handleSubmit = () => {
@@ -61,7 +68,7 @@ const LinkEdit = ({ links }:Props) => {
   };
 
   function handleClear() {
-    setLinkInput({ name: "", href: "" });
+    setLinkInput({id:"", name: "", href: "" });
     setSelectedIcon("");
   }
 
@@ -156,13 +163,13 @@ const LinkEdit = ({ links }:Props) => {
           </div>
         </div>
         <div className="mt-2 flex h-[424px] flex-col gap-4 overflow-auto py-4 shadow-lg">
-          {links.map((link: Links, idx: number) => {
+          {links.map((link: Links) => {
             return (
               <div
-                key={idx}
+                key={link.id}
                 className="flex items-center justify-between rounded-md p-2 shadow-lg"
               >
-                <UserLink link={link} idx={idx} removeLink={removeLink} />
+                <UserLink link={link} deleteLink={deleteLink} />
               </div>
             );
           })}
