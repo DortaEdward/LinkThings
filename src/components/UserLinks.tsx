@@ -7,8 +7,8 @@ const UserLink = ({ link, removeLink, idx }: any) => {
       <div className="flex items-center gap-2">
         <Icon name={link.icon} />
         <div className="flex flex-col gap-2 p-2">
-          <div>{link.title}</div>
-          <div className="text-lg">{link.link}</div>
+          <div>{link.name}</div>
+          <div className="text-lg">{link.href}</div>
         </div>
       </div>
       <div className="flex flex-col gap-2">

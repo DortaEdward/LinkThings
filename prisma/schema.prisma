@@ -42,15 +42,18 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  links         Link[]
-  Page          Page?
+  id              String     @id @default(cuid())
+  name            String?
+  email           String?    @unique
+  emailVerified   DateTime?
+  image           String?
+  accounts        Account[]
+  sessions        Session[]
+  links           Link[]
+  stats           UserStats? @relation(fields: [userStatsId], references: [id])
+  backgroundImage String?
+  bio             String?
+  userStatsId     String?
 }
 
 model VerificationToken {
@@ -67,20 +70,14 @@ model Link {
   userId       String
   name         String
   href         String
-  icon         String
+  icon         String?
   totalClicks  Int    @default(0)
   uniqueClicks Int    @default(0)
-  page         Page   @relation(fields: [pageId], references: [id])
-  pageId       String
 }
 
-model Page {
-  id              String  @id @default(cuid())
-  user            User    @relation(fields: [userId], references: [id])
-  userId          String  @unique
-  Link            Link[]
-  totalViews      Int     @default(0)
-  unqiueViews     Int     @default(0)
-  backgroundImage String?
-  bio             String?
+model UserStats {
+  id          String @id @default(cuid())
+  totalViews  Int    @default(0)
+  unqiueViews Int    @default(0)
+  User        User[]
 }

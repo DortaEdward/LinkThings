@@ -2,77 +2,66 @@ import { IconsImages } from "./Icons";
 import { MdExpandMore, MdExpandLess } from "react-icons/md";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { trpc } from "../utils/trpc";
+
+type Links ={
+  name: string;
+  href: string;
+}
+
+type Props = {
+  links: Links[];
+};
 
 import Image from "next/image";
 import Icon from "./Icon";
 import UserLink from "./UserLinks";
-type Link = {
-  title: string;
-  link: string;
-  icon: string;
-};
 
-const PageEdit = () => {
+const LinkEdit = ({ links }:Props) => {
+
   const [iconListToggle, setIconListToggle] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string>();
-  const [links, setLinks] = useState<Link[]>([
-    {
-      title: "Instagram",
-      link: "https://www.Instagram.com",
-      icon: "instagram",
-    },
-    {
-      title: "Instagram",
-      link: "https://www.Instagram.com",
-      icon: "google",
-    },
-    {
-      title: "Instagram",
-      link: "https://www.Instagram.com",
-      icon: "twitter",
-    },
-    {
-      title: "Instagram",
-      link: "https://www.Instagram.com",
-      icon: "facebook",
-    },
-    {
-      title: "Instagram",
-      link: "https://www.Instagram.com",
-      icon: "instagram",
-    },
-  ]);
+  const queryClient = trpc.useContext();
+  const createLinkMutation = trpc.link.createLink.useMutation();
 
-  const [linkInput, setLinkInput] = useState<Link>({
-    title: "",
-    link: "",
-    icon: "",
+  const [linkInput, setLinkInput] = useState<Links>({
+    name: "",
+    href: "",
   });
 
   const { data: session } = useSession();
 
   function removeLink(idx: number) {
-    const newLinks = links.filter((_, i) => i !== idx);
-    setLinks(newLinks);
+    return
   }
 
   const handleSubmit = () => {
     if (
-      linkInput?.link.length <= 0 ||
-      linkInput.title.length <= 0 ||
+      linkInput?.name.length <= 0 ||
+      linkInput.href.length <= 0 ||
       selectedIcon === undefined
     )
       return;
+    if(selectedIcon === null) setSelectedIcon('')
     setLinkInput((prev) => ({
       ...prev,
-      icon: selectedIcon,
     }));
-    setLinks((prev) => [...prev, linkInput]);
+
+    const payload = {
+      ...linkInput,
+      icon: selectedIcon
+    }
+
+    createLinkMutation.mutate((payload),{
+      onSuccess(){
+        queryClient.link.getUserLinks.invalidate()
+      }
+    })
     handleClear();
   };
 
   function handleClear() {
-    setLinkInput({ title: "", link: "", icon: "" });
+    setLinkInput({ name: "", href: "" });
     setSelectedIcon("");
   }
 
@@ -94,15 +83,15 @@ const PageEdit = () => {
               <input
                 type="text"
                 placeholder="Title of link"
-                onChange={updateForm("title")}
-                value={linkInput.title}
+                onChange={updateForm("name")}
+                value={linkInput.name}
                 className="flex-1 rounded bg-neutral-100 px-4 py-2 outline-none"
               />
               <input
                 type="text"
                 placeholder="Add a link"
-                value={linkInput.link}
-                onChange={updateForm("link")}
+                value={linkInput.href}
+                onChange={updateForm("href")}
                 className="flex-1 rounded bg-neutral-100 px-4 py-2 outline-none"
               />
             </div>
@@ -145,7 +134,8 @@ const PageEdit = () => {
                     })}
                   </div>
                 ) : (
-                  <></>
+                  <>
+                  </>
                 )}
               </div>
               <div className="flex gap-3">
@@ -166,7 +156,7 @@ const PageEdit = () => {
           </div>
         </div>
         <div className="mt-2 flex h-[424px] flex-col gap-4 overflow-auto py-4 shadow-lg">
-          {links.map((link: Link, idx: number) => {
+          {links.map((link: Links, idx: number) => {
             return (
               <div
                 key={idx}
@@ -203,15 +193,16 @@ const PageEdit = () => {
                   <div className="flex h-[300px] w-[200px] flex-col gap-2 outline">
                     {links.map((link, idx) => {
                       return (
-                        <a href={link.link} key={`${link.title}-${idx}`}>
-                          {link.title}
+                        <a href={link.href} key={`${link.name}-${idx}`}>
+                          {link.name}
                         </a>
                       );
                     })}
                   </div>
                 </>
               ) : (
-                <></>
+                <>
+                </>
               )}
             </div>
           </div>
@@ -222,5 +213,4 @@ const PageEdit = () => {
   );
 };
 
-
-export default PageEdit;
+export default LinkEdit;

@@ -1,19 +1,18 @@
 import { getSession, useSession } from "next-auth/react";
 import AuthorizedLayout from "../../Layout/Authorized";
 import type { GetServerSidePropsContext } from "next";
-import PageEdit from "../../components/PageEdit";
+import LinkEdit from "../../components/LinkEdit";
 import { trpc } from "../../utils/trpc";
 
 const Dashboard = () => {
-  const { data: session } = useSession();
-  const { data, isLoading } = trpc.page.findPage.useQuery();
-
-  if (isLoading) return <>Loading..</>;
-
+  const { data, isLoading } = trpc.link.getUserLinks.useQuery();
   return (
     <AuthorizedLayout>
       <div className="my-4"></div>
-      {data ? session?.user ? <PageEdit /> : <></> : <>Create Page</>}
+      { isLoading
+        ? <>Retrieving links</>
+        : <LinkEdit links={data ? data : []} />
+      }
     </AuthorizedLayout>
   );
 };
@@ -33,3 +32,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {},
   };
 }
+
+
+/*
+if there are no links it returns undefinded/null
+*/
