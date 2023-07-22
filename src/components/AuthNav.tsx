@@ -12,7 +12,7 @@ const AuthNav = () => {
   const router = useRouter();
   const path = router.asPath;
   return (
-    <div className="flex items-center justify-between rounded-lg px-6 py-4 shadow-lg">
+    <div className="flex items-center justify-between rounded-lg px-6 py-1 shadow-lg">
       <div>
         <div className="hidden sm:block">
           <Logo />

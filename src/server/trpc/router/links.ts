@@ -20,7 +20,6 @@ export const linkRouter = router({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id
       const { name, href, icon } = input;
-      console.log('Icon?:', icon)
       const payload = {
         userId,
         name,
@@ -42,5 +41,5 @@ export const linkRouter = router({
           userId:ctx.session.user.id
         }
       });
-    })
+    }),
 });

@@ -3,23 +3,22 @@ import { MdExpandMore, MdExpandLess } from "react-icons/md";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import Icon from "./Icon";
 
-type Links ={
+type Links = {
   id: string;
   name: string;
   href: string;
-}
+};
 
 type Props = {
   links: Links[];
 };
 
-import Image from "next/image";
-import Icon from "./Icon";
 import UserLink from "./UserLinks";
+import Phone from "./Phone";
 
-const LinkEdit = ({ links }:Props) => {
-
+const LinkEdit = ({ links }: Props) => {
   const [iconListToggle, setIconListToggle] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string>();
   const queryClient = trpc.useContext();
@@ -27,7 +26,7 @@ const LinkEdit = ({ links }:Props) => {
   const deleteLinkMutation = trpc.link.deleteLink.useMutation();
 
   const [linkInput, setLinkInput] = useState<Links>({
-    id:"",
+    id: "",
     name: "",
     href: "",
   });
@@ -35,11 +34,14 @@ const LinkEdit = ({ links }:Props) => {
   const { data: session } = useSession();
 
   function deleteLink(id: string) {
-    deleteLinkMutation.mutate(({id}),{
-      onSuccess(){
-        queryClient.link.getUserLinks.invalidate()
+    deleteLinkMutation.mutate(
+      { id },
+      {
+        onSuccess() {
+          queryClient.link.getUserLinks.invalidate();
+        },
       }
-    })
+    );
   }
 
   const handleSubmit = () => {
@@ -49,26 +51,26 @@ const LinkEdit = ({ links }:Props) => {
       selectedIcon === undefined
     )
       return;
-    if(selectedIcon === null) setSelectedIcon('')
+    if (selectedIcon === null) setSelectedIcon("");
     setLinkInput((prev) => ({
       ...prev,
     }));
 
     const payload = {
       ...linkInput,
-      icon: selectedIcon
-    }
+      icon: selectedIcon,
+    };
 
-    createLinkMutation.mutate((payload),{
-      onSuccess(){
-        queryClient.link.getUserLinks.invalidate()
-      }
-    })
+    createLinkMutation.mutate(payload, {
+      onSuccess() {
+        queryClient.link.getUserLinks.invalidate();
+      },
+    });
     handleClear();
   };
 
   function handleClear() {
-    setLinkInput({id:"", name: "", href: "" });
+    setLinkInput({ id: "", name: "", href: "" });
     setSelectedIcon("");
   }
 
@@ -141,8 +143,7 @@ const LinkEdit = ({ links }:Props) => {
                     })}
                   </div>
                 ) : (
-                  <>
-                  </>
+                  <></>
                 )}
               </div>
               <div className="flex gap-3">
@@ -175,47 +176,18 @@ const LinkEdit = ({ links }:Props) => {
           })}
         </div>
       </div>
-
-      <div className="hidden w-1/3 rounded-lg px-4 py-10 shadow-lg lg:block">
-        <div className="relative flex h-full items-center justify-center">
-          <div className="h-[500px] w-[260px] rounded-3xl bg-neutral-800"></div>
-          <div className="absolute flex h-[485px] w-[245px] justify-center rounded-2xl bg-neutral-100 pt-10">
-            <div className="flex flex-col items-center gap-1">
-              {session?.user ? (
-                <>
-                  <Image
-                    src={session?.user?.image as string}
-                    alt={`Image of ${session?.user?.image}`}
-                    width={48}
-                    height={48}
-                    className="rounded-full"
-                  />
-                  <div className="leading-4">
-                    <p className="font-bold capitalize">
-                      {session?.user?.name}
-                    </p>
-                    <p className="text-sm italic">@{session?.user?.name}</p>
-                  </div>
-                  <div className="my-2"></div>
-                  <div className="flex h-[300px] w-[200px] flex-col gap-2 outline">
-                    {links.map((link, idx) => {
-                      return (
-                        <a href={link.href} key={`${link.name}-${idx}`}>
-                          {link.name}
-                        </a>
-                      );
-                    })}
-                  </div>
-                </>
-              ) : (
-                <>
-                </>
-              )}
-            </div>
-          </div>
-          <div className="absolute top-5 h-[20px] w-[100px] rounded-bl-md rounded-br-md bg-neutral-800"></div>
-        </div>
-      </div>
+      {session?.user ? (
+        <Phone
+          user={{
+            id: session.user.id,
+            name: session.user.name as string,
+            image: session.user.image as string,
+          }}
+          links={links}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

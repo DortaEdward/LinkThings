@@ -1,4 +1,4 @@
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import AuthorizedLayout from "../../Layout/Authorized";
 import type { GetServerSidePropsContext } from "next";
 import LinkEdit from "../../components/LinkEdit";
@@ -29,7 +29,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
   return {
-    props: {},
+    props: {session},
   };
 }
 
