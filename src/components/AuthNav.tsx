@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import {
   MdOutlinePhonelink,
   MdBackupTable,
@@ -9,6 +10,7 @@ import {
 } from "react-icons/md";
 import Logo from "./Logo";
 const AuthNav = () => {
+  const {data:session} = useSession();
   const router = useRouter();
   const path = router.asPath;
   return (
@@ -72,7 +74,7 @@ const AuthNav = () => {
           </p>
         </Link>
       </div>
-      <div className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100">
+      <div onClick={() => console.log(`http://localhost:3000/user/${session?.user ? session.user.id :''}`)} className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100">
         <MdIosShare size={32} />
         <p className="hidden sm:block">Share</p>
       </div>

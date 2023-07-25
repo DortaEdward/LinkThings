@@ -175,6 +175,7 @@ const LinkEdit = ({ links }: Props) => {
             );
           })}
         </div>
+        <div className="my-4"></div>
       </div>
       {session?.user ? (
         <Phone

@@ -61,7 +61,7 @@ const Phone = ({ user, links }: Props) => {
             }
           </div>
         </div>
-        <div className="absolute top-5 h-[20px] w-[100px] rounded-bl-md rounded-br-md bg-neutral-800"></div>
+        <div className="absolute top-8 h-[20px] w-[100px] rounded-bl-md rounded-br-md bg-neutral-800"></div>
       </div>
     </div>
   );
