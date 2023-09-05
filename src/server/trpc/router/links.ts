@@ -3,7 +3,8 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
 export const linkRouter = router({
-  getUserLinks: protectedProcedure.query(async ({ ctx }) => {
+
+  getLinks: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
     return await ctx.prisma.link.findMany({
       where: {
@@ -11,6 +12,28 @@ export const linkRouter = router({
       }
     });
   }),
+
+  getUserLinks: publicProcedure.input(z.object({
+    id: z.string()
+  })).query( async ({ ctx, input }) => {
+    return await ctx.prisma.link.findMany({
+        where:{
+            userId: input.id
+        },
+        include:{
+            user: {
+                select:{
+                    id: true,
+                    image:true,
+                    backgroundImage: true,
+                    name: true
+                }
+            }
+        }
+        
+    }) 
+  }),
+
   createLink: protectedProcedure
     .input(z.object({
       name:z.string(),
@@ -30,6 +53,7 @@ export const linkRouter = router({
         data: payload
       })
     }),
+
     deleteLink: protectedProcedure
     .input(z.object({
       id:z.string()

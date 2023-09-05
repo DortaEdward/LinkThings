@@ -74,8 +74,10 @@ const AuthNav = () => {
           </p>
         </Link>
       </div>
-      <div onClick={() => console.log(`http://localhost:3000/user/${session?.user ? session.user.id :''}`)} className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100">
-        <MdIosShare size={32} />
+      <div className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100">
+        <Link href={`/user/${session?.user?.id}`}>
+            <MdIosShare size={32} />
+        </Link>
         <p className="hidden sm:block">Share</p>
       </div>
     </div>

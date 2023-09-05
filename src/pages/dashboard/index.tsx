@@ -5,7 +5,7 @@ import LinkEdit from "../../components/LinkEdit";
 import { trpc } from "../../utils/trpc";
 
 const Dashboard = () => {
-  const { data, isLoading } = trpc.link.getUserLinks.useQuery();
+  const { data, isLoading } = trpc.link.getLinks.useQuery();
   return (
     <AuthorizedLayout>
       <div className="my-4"></div>
