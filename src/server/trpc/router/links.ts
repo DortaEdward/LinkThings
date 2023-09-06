@@ -16,19 +16,12 @@ export const linkRouter = router({
   getUserLinks: publicProcedure.input(z.object({
     id: z.string()
   })).query( async ({ ctx, input }) => {
-    return await ctx.prisma.link.findMany({
+    return await ctx.prisma.user.findUnique({
         where:{
-            userId: input.id
+            id: input.id
         },
         include:{
-            user: {
-                select:{
-                    id: true,
-                    image:true,
-                    backgroundImage: true,
-                    name: true
-                }
-            }
+            links: true
         }
         
     }) 

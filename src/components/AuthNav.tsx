@@ -35,13 +35,13 @@ const AuthNav = () => {
           </p>
         </Link>
         <Link
-          href={"/dashboard/appearence"}
+          href={"/dashboard/appearance"}
           className="translation flex scale-95 cursor-pointer flex-col items-center duration-300 ease-in-out hover:scale-100"
         >
           <MdBackupTable size={32} />
           <p
             className={`${
-              path === "/dashboard/appearence" ? "font-bold" : ""
+              path === "/dashboard/appearance" ? "font-bold" : ""
             } hidden text-lg sm:block`}
           >
             Appearence
